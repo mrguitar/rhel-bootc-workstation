@@ -1,3 +1,52 @@
+# rhel-bootc-workstation example
+
+This repo will help you get started with using rhel 10 as a workstation on your system. 
+
+## Steps
+1. clone this repo
+2. Populate the secrets using your Red Hat subscription & registry authentication: follow the instructions below
+3. Make any needed changes to the Containerfile (you can always do this post install and update your system via
+   ```
+   sudo bootc switch [registry]/[user]/[image]:[tag]
+   ```
+   
+4. Build the container image using
+  ```
+sudo podman build -f Containerfile -t [registry]/[user]/[image]:[tag]
+```
+
+5. Create an installer image:
+  ```
+    sudo podman run \
+    --rm \
+    -it \
+    --privileged \
+    --security-opt label=type:unconfined_t \
+    -v ./config.toml:/config.toml:ro \
+    -v ./output:/output \
+    -v /var/lib/containers/storage:/var/lib/containers/storage \
+    quay.io/centos-bootc/bootc-image-builder:latest \
+    --type anaconda-iso \
+	--use-librepo=True \
+    [registry]/[user]/[image]:[tag]
+```
+6. Install your VM or bare metal system. If you need to use a thumbdrive you can run something like `sudo dd if=~/output/bootiso/install.iso of=/dev/sdX bs=8M status=progress`
+  If you're not sure what device your thumbdrive is, simply plug and unplug it and run `sudo dmesg` and the device should be obvious. 
+7. Add your partitioning preferences and user info and you're good to go!
+
+After RHEL 10 GAs, adding a cron option to `.github/workflows/build_rhel_bootc.yml` can give your system auto updates if you want. 
+
+You may wish to select a time to apply future updates on your system. Simply create `etc/systemd/system/bootc-fetch-apply-updates.timer.d/weekly.conf` with the content below and adjust the time window to your preference:
+
+```
+[Timer]
+#Apply updates on Saturday at 3am
+OnCalendar=Sat *-*-* 03:00:00
+
+```
+
+## Below is the README from our [GitHub CICD Example](https://github.com/redhat-cop/redhat-image-mode-actions) We recommend you close this repo for your future projects!
+
 # redhat-image-mode-actions
 ## Template repo for Github Actions based builds of bootc images. 
 This repository is designed be used with the exercise in the redhat-cop/redhat-image-mode-demo repository. This template provides a sample Containerfile and workflow as a starting point for use in your own account. The workflow can be triggered in two ways, by creating a tag or manually. A manual trigger will set one of the tags to the branch name which may overwrite older manual builds.  For more information on the workflow design, refer to the exercise.
