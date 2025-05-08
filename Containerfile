@@ -1,14 +1,11 @@
-#FROM registry.stage.redhat.io/rhel10/rhel-bootc:10.0
+#FROM registry.redhat.io/rhel10/rhel-bootc:10.0
 FROM quay.io/mrguitar/el10-base:latest
 
 COPY etc etc
 # Make sure that the rootfiles package can be installed
 RUN mkdir -p /var/roothome 
 
-#remove after the repos hit the CDN
-#RUN dnf repolist && sed -i 's/enabled=1/enabled=0/' /etc/yum/pluginconf.d/subscription-manager.conf
-
-RUN dnf --disablerepo=rhel-10-for-x86_64-appstream-rpms --disablerepo=rhel-10-for-x86_64-baseos-rpms groupinstall -y \
+RUN dnf groupinstall -y \
 	"Container Management" \
 	gnome-desktop \
 	hardware-support \
@@ -17,7 +14,7 @@ RUN dnf --disablerepo=rhel-10-for-x86_64-appstream-rpms --disablerepo=rhel-10-fo
 	"Workstation" \
 	"Virtualization Host" && \
 	\
-	dnf --disablerepo=rhel-10-for-x86_64-appstream-rpms --disablerepo=rhel-10-for-x86_64-baseos-rpms install -y \
+	dnf install -y \
 	cockpit-machines \
 	cockpit-podman \
 	lm_sensors \
