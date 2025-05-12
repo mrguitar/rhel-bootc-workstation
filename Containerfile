@@ -17,6 +17,7 @@ RUN dnf groupinstall -y \
 	dnf install -y \
 	cockpit-machines \
 	cockpit-podman \
+	command-line-assistant \
 	lm_sensors \
 	pcp \
 	pcp-selinux \
