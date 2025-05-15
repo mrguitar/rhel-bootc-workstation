@@ -2,6 +2,8 @@ name: Build RHEL bootc image with GHA
 on:
   workflow_dispatch:
   push:
+    branches:
+      main
     tags:
       - '*'
 
@@ -32,10 +34,10 @@ jobs:
       TAGLIST: latest ${{ github.sha }} ${{ github.ref_name }}
 
       # Destination registry for built images
-      DEST_REGISTRY_HOST: "ghcr.io"
+      DEST_REGISTRY_HOST: "quay.io"
       # Destination credentials - uses platform variables and secrets
-      # DEST_REGISTRY_USER: "${{ github.actor }}"
-      # DEST_REGISTRY_PASSWORD: "${{ secrets.GITHUB_TOKEN }}"
+      # DEST_REGISTRY_USER: "${{ secrets.DEST_REGISTRY_USER }}"
+      # DEST_REGISTRY_PASSWORD: "${{ secrets.DEST_REGISTRY_PASSWORD }}"
 
     container:
       image: registry.access.redhat.com/ubi9/ubi
@@ -78,21 +80,21 @@ jobs:
           tags: ${{ env.TAGLIST }}
           containerfiles: ${{ env.CONTAINERFILE }}
 
-      - name: Log in to the GitHub Container registry
+      - name: Log in to Container registry
         uses: redhat-actions/podman-login@v1
         with:
           registry: ${{ env.DEST_REGISTRY_HOST }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          username: ${{ secrets.DEST_REGISTRY_USER }}
+          password: ${{ secrets.DEST_REGISTRY_PASSWORD }}
           auth_file_path: /run/containers/0/auth.json
 
-      - name: Push to GitHub Container Repository
+      - name: Push to Container Repository
         id: push-to-ghcr
         uses: redhat-actions/push-to-registry@v2
         with:
           image: ${{ steps.build-image.outputs.image }}
           tags: ${{ steps.build-image.outputs.tags }}
-          registry: ${{ env.DEST_REGISTRY_HOST }}
+          registry: ${{ env.DEST_REGISTRY_HOST }}/${{ secrets.DEST_REGISTRY_USER }}
 
       - name: Clean up the subscription
         if: always()

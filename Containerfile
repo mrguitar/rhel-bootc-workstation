@@ -1,5 +1,4 @@
-#FROM registry.redhat.io/rhel10/rhel-bootc:10.0
-FROM quay.io/mrguitar/el10-base:latest
+FROM registry.redhat.io/rhel10/rhel-bootc:10.0
 
 COPY etc etc
 # Make sure that the rootfiles package can be installed
