@@ -10,8 +10,8 @@ This repo will help you get started with using rhel 10 as a workstation on your 
    gh secret set RHT_ACT_KEY -R origin/repo --body "VALUE"
    gh secret set SOURCE_REGISTRY_USER -R origin/repo --body "VALUE"
    gh secret set SOURCE_REGISTRY_PASSWORD -R origin/repo --body "VALUE"
-   gh secret set DEST_REGISTRY_USER -R mrguitar/rhel-bootc-workstation --body "VALUE"
-   gh secret set DEST_REGISTRY_PASSWORD -R mrguitar/rhel-bootc-workstation --body "VALUE"
+   gh secret set DEST_REGISTRY_USER -R origin/repo --body "VALUE"
+   gh secret set DEST_REGISTRY_PASSWORD -R origin/repo --body "VALUE"
    ```
 3. Make any needed changes to the Containerfile  
 4. Build the container image using
