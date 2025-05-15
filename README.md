@@ -37,7 +37,27 @@ This repo will help you get started with using rhel 10 as a workstation on your 
   If you're not sure what device your thumbdrive is, simply plug and unplug it and run `sudo dmesg` and the device should be obvious. 
 7. Add your partitioning preferences and user info and you're good to go!
 
-Adding a cron option to `.github/workflows/build_rhel_bootc.yml` can give your system auto updates if you want. 
+### Notes:
+
+The included config.toml in this repo will "wipe" the default kickstart that bootc-image-builder creates and this will create an interactive install with only the container image "hard coded". Once you have container builds going to a registry, and your system is installed, you will need to update bootc to look at your desired image/tag in the registry. Simply run `sudo bootc switch [registry[/[image]/[tag]` and you're good to go.
+
+Adding the following snippet with the correct registry/image/tag to your config.toml will tell the system where to look for updates after installing from the ISO. This is a nice touch that bootc-image-builder does for non-interactive installs:
+   ```
+[customizations.installer.kickstart]
+contents = """
+%post --erroronfail
+bootc switch --mutate-in-place --transport registry [registry[/[image]/[tag]
+%end
+"""
+   ```
+
+Adding a cron option to `.github/workflows/build_rhel_bootc.yml` is a simple way to give your system "auto updates". Renovate bot can do fancier things, but this is effectly like running `dnf update -y && reboot` once a week. 
+
+   ```
+   on:
+      schedule:
+        - cron: "0 1 * * Fri"
+   ```
 
 You may wish to adjust the time when the client checks & applies updates on your system. The default behavior when a new image exists will 1) pull the image 2) stage the update and 3) reboot the system. This repo includes a systemd drop-in: `etc/systemd/system/bootc-fetch-apply-updates.timer.d/weekly.conf` and will check at 3AM on Saturdays. Adjust the time/schedule to your preference:
 
