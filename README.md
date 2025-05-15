@@ -4,19 +4,22 @@ This repo will help you get started with using rhel 10 as a workstation on your 
 
 ## Steps
 1. clone this repo
-2. Populate the secrets using your Red Hat subscription & registry authentication: follow the instructions below
-3. Make any needed changes to the Containerfile (you can always do this post install and update your system via
+2. Populate the secrets using your Red Hat subscription & registry authentication. There are more details below, but if you use the gh client you can run the following once VALUE is replaced:
    ```
-   sudo bootc switch [registry]/[user]/[image]:[tag]
+   gh secret set RHT_ORGID -R origin/repo --body "VALUE"
+   gh secret set RHT_ACT_KEY -R origin/repo --body "VALUE"
+   gh secret set SOURCE_REGISTRY_USER -R origin/repo --body "VALUE"
+   gh secret set SOURCE_REGISTRY_PASSWORD -R origin/repo --body "VALUE"
+   gh secret set DEST_REGISTRY_USER -R mrguitar/rhel-bootc-workstation --body "VALUE"
+   gh secret set DEST_REGISTRY_PASSWORD -R mrguitar/rhel-bootc-workstation --body "VALUE"
    ```
-   
+3. Make any needed changes to the Containerfile  
 4. Build the container image using
-  ```
-sudo podman build -f Containerfile -t [registry]/[user]/[image]:[tag]
-```
-
+   ```
+   sudo podman build -f Containerfile -t [registry]/[user]/[image]:[tag]
+   ```
 5. Create an installer image:
-  ```
+   ```
     sudo podman run \
     --rm \
     -it \
@@ -29,14 +32,14 @@ sudo podman build -f Containerfile -t [registry]/[user]/[image]:[tag]
     --type anaconda-iso \
 	--use-librepo=True \
     [registry]/[user]/[image]:[tag]
-```
+    ```
 6. Install your VM or bare metal system. If you need to use a thumbdrive you can run something like `sudo dd if=~/output/bootiso/install.iso of=/dev/sdX bs=8M status=progress`
   If you're not sure what device your thumbdrive is, simply plug and unplug it and run `sudo dmesg` and the device should be obvious. 
 7. Add your partitioning preferences and user info and you're good to go!
 
-After RHEL 10 GAs, adding a cron option to `.github/workflows/build_rhel_bootc.yml` can give your system auto updates if you want. 
+Adding a cron option to `.github/workflows/build_rhel_bootc.yml` can give your system auto updates if you want. 
 
-You may wish to select a time to apply future updates on your system. Simply create `etc/systemd/system/bootc-fetch-apply-updates.timer.d/weekly.conf` with the content below and adjust the time window to your preference:
+You may wish to adjust the time when the client checks & applies updates on your system. The default behavior when a new image exists will 1) pull the image 2) stage the update and 3) reboot the system. This repo includes a systemd drop-in: `etc/systemd/system/bootc-fetch-apply-updates.timer.d/weekly.conf` and will check at 3AM on Saturdays. Adjust the time/schedule to your preference:
 
 ```
 [Timer]
@@ -45,7 +48,7 @@ OnCalendar=Sat *-*-* 03:00:00
 
 ```
 
-## Below is the README from our [GitHub CICD Example](https://github.com/redhat-cop/redhat-image-mode-actions) We recommend you close this repo for your future projects!
+## Below is the README from our [GitHub CICD Example](https://github.com/redhat-cop/redhat-image-mode-actions) We recommend you clone this repo for your future projects!
 
 # redhat-image-mode-actions
 ## Template repo for Github Actions based builds of bootc images. 
