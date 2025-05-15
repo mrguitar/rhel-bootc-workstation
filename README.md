@@ -55,8 +55,8 @@ Adding a cron option to `.github/workflows/build_rhel_bootc.yml` is a simple way
 
    ```
    on:
-      schedule:
-        - cron: "0 1 * * Fri"
+     schedule:
+       - cron: "0 1 * * Fri"
    ```
 
 You may wish to adjust the time when the client checks & applies updates on your system. The default behavior when a new image exists will 1) pull the image 2) stage the update and 3) reboot the system. This repo includes a systemd drop-in: `etc/systemd/system/bootc-fetch-apply-updates.timer.d/weekly.conf` and will check at 3AM on Saturdays. Adjust the time/schedule to your preference:
