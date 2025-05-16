@@ -1,6 +1,7 @@
 # rhel-bootc-workstation example
 
 This repo will help you get started with using rhel 10 as a workstation on your system. 
+![Screenshot of RHEL 10](https://github.com/mrguitar/rhel-bootc-workstation/blob/main/rhel10.png)
 
 ## Steps
 1. clone this repo
