@@ -1,5 +1,7 @@
 name: Build RHEL bootc image with GHA
 on:
+  schedule:
+    - cron: "0 1 * * Fri"
   workflow_dispatch:
   push:
     branches:
