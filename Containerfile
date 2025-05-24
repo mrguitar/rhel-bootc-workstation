@@ -29,7 +29,7 @@ RUN systemctl set-default graphical.target
 
 RUN systemctl enable fstrim.timer podman-auto-update.timer cockpit.socket
 
-#add NVIDIA drivers from negativo17 repo
+#add NVIDIA drivers and a few other packages from negativo17 & epel repositories
 RUN dnf config-manager --add-repo=https://negativo17.org/repos/epel-nvidia.repo --add-repo=https://negativo17.org/repos/epel-multimedia.repo &&\
         dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-10.noarch.rpm &&\
         curl -s -L https://nvidia.github.io/libnvidia-container/stable/rpm/nvidia-container-toolkit.repo -o /etc/yum.repos.d/nvidia-container-toolkit.repo && \
