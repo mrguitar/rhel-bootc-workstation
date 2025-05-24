@@ -1,6 +1,8 @@
 FROM registry.redhat.io/rhel10/rhel-bootc:10.0
 
 COPY etc etc
+COPY usr usr
+
 # Make sure that the rootfiles package can be installed
 RUN mkdir -p /var/roothome 
 
@@ -21,12 +23,40 @@ RUN dnf groupinstall -y \
 	pcp \
 	pcp-selinux \
 	powertop \
-	wireguard-tools &&\
-	dnf clean all
+	wireguard-tools 
 
 RUN systemctl set-default graphical.target
 
 RUN systemctl enable fstrim.timer podman-auto-update.timer cockpit.socket
+
+#add NVIDIA drivers from negativo17 repo
+RUN dnf config-manager --add-repo=https://negativo17.org/repos/epel-nvidia.repo --add-repo=https://negativo17.org/repos/epel-multimedia.repo &&\
+        dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-10.noarch.rpm &&\
+        curl -s -L https://nvidia.github.io/libnvidia-container/stable/rpm/nvidia-container-toolkit.repo -o /etc/yum.repos.d/nvidia-container-toolkit.repo && \
+        mkdir -p /etc/nvidia &&\
+        echo "MODULE_VARIANT=kernel" > etc/nvidia/kernel.conf &&\
+        dnf install -y \
+	dkms-nvidia \
+	dkms-xpadneo \
+	ffmpeg \
+	gdb \
+	gcc-c++ \
+	java-headless \
+	kernel-devel \
+	kernel-headers \
+	libguestfs \
+	libva-nvidia-driver \
+	libva-utils \
+	nvidia-container-toolkit \
+	nvidia-driver \
+	nvidia-settings \
+	nvidia-vaapi-driver \
+	vulkan-tools &&\
+        dnf clean all
+
+#Add steam-devices udev rules
+RUN curl -s -L https://raw.githubusercontent.com/ValveSoftware/steam-devices/master/60-steam-input.rules -o /usr/lib/udev/rules.d/60-steam-input.rules &&\
+	curl -s -L https://raw.githubusercontent.com/ValveSoftware/steam-devices/master/60-steam-vr.rules -o /usr/lib/udev/rules.d/60-steam-vr.rules
 
 #let's set the timezone
 RUN ln -s /usr/share/zoneinfo/America/Chicago /etc/localtime
