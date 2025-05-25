@@ -54,6 +54,9 @@ RUN dnf config-manager --add-repo=https://negativo17.org/repos/epel-nvidia.repo 
 	vulkan-tools &&\
         dnf clean all
 
+COPY kmod.sh /tmp
+RUN /tmp/kmod.sh
+
 #Add steam-devices udev rules
 RUN curl -s -L https://raw.githubusercontent.com/ValveSoftware/steam-devices/master/60-steam-input.rules -o /usr/lib/udev/rules.d/60-steam-input.rules &&\
 	curl -s -L https://raw.githubusercontent.com/ValveSoftware/steam-devices/master/60-steam-vr.rules -o /usr/lib/udev/rules.d/60-steam-vr.rules
