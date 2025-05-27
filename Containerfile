@@ -44,6 +44,7 @@ RUN dnf config-manager --add-repo=https://negativo17.org/repos/epel-nvidia.repo 
 	java-headless \
 	kernel-devel \
 	kernel-headers \
+	libavcodec \
 	libguestfs \
 	libva-nvidia-driver \
 	libva-utils \
