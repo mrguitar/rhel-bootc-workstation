@@ -1,1 +1,1 @@
-kargs = ["pcie_port_pm=off pcie_aspm.policy=performance"]
+kargs = ["pcie_port_pm=off pcie_aspm.policy=performance pci=realloc=off"]
