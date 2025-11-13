@@ -1,4 +1,4 @@
-FROM registry.redhat.io/rhel10/rhel-bootc:10.0
+FROM registry.redhat.io/rhel10/rhel-bootc:10.1
 
 COPY etc etc
 # Make sure that the rootfiles package can be installed
