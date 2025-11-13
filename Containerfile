@@ -23,7 +23,7 @@ RUN dnf groupinstall -y \
 	powertop \
 	wireguard-tools &&\
 	dnf clean all
-
+RUN set -xe; kver=$(ls /usr/lib/modules); env DRACUT_NO_XATTR=1 dracut -vf /usr/lib/modules/$kver/initramfs.img "$kver"
 RUN systemctl set-default graphical.target
 
 RUN systemctl enable fstrim.timer podman-auto-update.timer cockpit.socket
