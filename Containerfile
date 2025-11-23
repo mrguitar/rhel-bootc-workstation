@@ -3,6 +3,7 @@ FROM registry.redhat.io/rhel10/rhel-bootc:10.1
 COPY etc etc
 # Make sure that the rootfiles package can be installed
 RUN mkdir -p /var/roothome 
+RUN dnf install -y python3-dnf-plugin-versionlock && dnf versionlock add $(rpm -qa --queryformat '%{NAME}-%{VERSION}-%{RELEASE}\n' kernel*)
 
 RUN dnf groupinstall -y \
 	"Container Management" \
